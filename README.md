@@ -1,113 +1,77 @@
 # Media Manager
 
-A simple macOS desktop app for managing media files.
+A macOS app for browsing files and editing metadata.
 
-* **Photos & videos:** Change file dates and media metadata
-* **MP3/WAV:** Edit title, artist, album, year, genre, and track number
-* **MP3/WAV:** Add or replace cover art
+### Supported Files
+
+* **Photos:** JPG, TIFF, PNG, BMP, HEIC, WEBP
+* **Videos:** MP4, MOV, MKV, AVI
+* **Audio:** MP3, WAV, FLAC, OGG, M4A
+* **Documents:** PDF, DOCX, XLSX, PPTX
+
+Features include metadata editing, cover art, image conversion, file renaming, date editing, sorting, and previews.
 
 ## Setup
 
-### 1. Install Python
-
-Check if Python 3 is installed:
-
-```bash
-python3 --version
-```
-
-For the best macOS compatibility, install Python and Tk with Homebrew:
+Install Python with Tk:
 
 ```bash
 brew install python-tk
 ```
 
-If you don't have Homebrew, install it from [brew.sh](https://brew.sh?utm_source=chatgpt.com).
-
-### 2. Install ffmpeg (recommended)
-
-ffmpeg enables video thumbnails and lets the app edit dates stored inside video files.
+Install **ffmpeg** for video metadata and thumbnails:
 
 ```bash
 brew install ffmpeg
 ```
 
-The app works without ffmpeg, but video thumbnails and internal video date editing will be unavailable.
-
-### 3. Run the app
-
-Double-click:
-
-**`Run Media Manager.command`**
-
-The launcher automatically creates a `.venv` and installs the required dependencies the first time you run it.
-
-If macOS blocks the launcher, right-click it → **Open** → **Open**.
-
-## Using the App
-
-1. Click **Choose Folder…** to find your media files.
-2. Select a file to view its details.
-3. **Photos/Videos:** Enter a new date and click **Apply Date**.
-4. **MP3/WAV:** Edit the song information and click **Save Tags**.
-5. Use **Change Cover Art…** to add or replace album artwork.
-
-## Date Editing
-
-For supported files, **Apply Date** can update:
-
-* Photo EXIF date
-* Video internal creation date
-* macOS file Modified date
-* macOS file Created date when Apple's `SetFile` tool is available
-
-JPEG and TIFF files support EXIF dates. Other image formats only have their file date changed.
-
-Video dates require **ffmpeg**. Videos are not re-encoded, so there is no quality loss.
-
-## Notes
-
-* PNG, BMP, and HEIC files do not support EXIF dates.
-* Cover art is converted to JPEG and stored directly in the MP3/WAV file.
-* Hidden files (`.` files) are not displayed.
-* Changing a video's internal date may take some time because the file must be rewritten.
-
-## Troubleshooting
-
-**Blank window / deprecated Tk warning**
-
-Install modern Tk:
+Install **poppler** for PDF thumbnails (optional):
 
 ```bash
-brew install python-tk
+brew install poppler
 ```
 
-Then run the app using `Run Media Manager.command`.
+### Run the App
 
-**`No module named customtkinter` (or another dependency)**
+Double-click **`Run Media Manager.command`**.
 
-Use the launcher instead of running the script directly. If using Terminal:
+On first run, the launcher will:
+
+1. Find a compatible Python installation.
+2. Create a `.venv` in the app folder.
+3. Install the required dependencies.
+4. Launch the app.
+
+After setup, simply double-click the launcher to start the app.
+
+If macOS blocks the file, right-click → **Open** → **Open**.
+
+### Manual Setup
+
+If you prefer to run it from Terminal:
 
 ```bash
+cd /path/to/media-manager
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt
 .venv/bin/python3 media_manager.py
 ```
 
-**`externally-managed-environment`**
+## Usage
 
-Don't use `--break-system-packages`. The launcher creates a `.venv` specifically to avoid this issue.
+1. Choose a folder and select a file.
+2. Edit the available metadata, filename, or date.
+3. Use **Convert Format** for images or **Change Cover Art** for audio.
+4. Click **Save Changes**.
 
-**Video date or thumbnail not working**
+## Notes
 
-Install ffmpeg:
+* Image conversion creates a new file and keeps the original.
+* Video metadata editing requires ffmpeg.
+* PNG/BMP/WEBP do not support embedded EXIF dates.
+* DOCX/XLSX/PPTX files must be closed before saving.
+* Changing the macOS Created date requires `SetFile`:
 
-```bash
-brew install ffmpeg
-```
-
-**macOS Created date isn't changing**
-
-Install Apple's `SetFile` tool:
-
-```bash
-xcode-select --install
-```
+  ```bash
+  xcode-select --install
+  ```
